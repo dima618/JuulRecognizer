@@ -30,6 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             this.videoFrame = new Emgu.CV.UI.ImageBox();
+            this.start_button = new System.Windows.Forms.Button();
+            this.button_stop = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.videoFrame)).BeginInit();
             this.SuspendLayout();
             // 
@@ -42,14 +44,37 @@
             this.videoFrame.TabIndex = 2;
             this.videoFrame.TabStop = false;
             // 
+            // start_button
+            // 
+            this.start_button.Location = new System.Drawing.Point(1094, 505);
+            this.start_button.Name = "start_button";
+            this.start_button.Size = new System.Drawing.Size(139, 42);
+            this.start_button.TabIndex = 3;
+            this.start_button.Text = "Start";
+            this.start_button.UseVisualStyleBackColor = true;
+            this.start_button.Click += new System.EventHandler(this.start_button_Click);
+            // 
+            // button_stop
+            // 
+            this.button_stop.Location = new System.Drawing.Point(1094, 553);
+            this.button_stop.Name = "button_stop";
+            this.button_stop.Size = new System.Drawing.Size(139, 43);
+            this.button_stop.TabIndex = 4;
+            this.button_stop.Text = "Stop";
+            this.button_stop.UseVisualStyleBackColor = true;
+            this.button_stop.Click += new System.EventHandler(this.button_stop_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1245, 664);
+            this.Controls.Add(this.button_stop);
+            this.Controls.Add(this.start_button);
             this.Controls.Add(this.videoFrame);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.videoFrame)).EndInit();
             this.ResumeLayout(false);
 
@@ -58,6 +83,8 @@
         #endregion
 
         private Emgu.CV.UI.ImageBox videoFrame;
+        private System.Windows.Forms.Button start_button;
+        private System.Windows.Forms.Button button_stop;
     }
 }
 

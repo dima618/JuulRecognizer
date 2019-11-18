@@ -21,14 +21,36 @@ namespace JuulRecognizer
             InitializeComponent();
         }
 
-        private void initTimer()
+        void Capture()
         {
-            timer.Tick += new EventHandler();
+            timer.Tick += new EventHandler(updateImage);
+            timer.Interval = 33;
+            timer.Start();
         }
 
-        private void updateFrames()
+        void EndCapture()
         {
+            timer.Stop();
+        }
 
+        void updateImage(object sender, EventArgs arg)
+        {
+            videoFrame.Image = cap.QueryFrame();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void start_button_Click(object sender, EventArgs e)
+        {
+            Capture();
+        }
+
+        private void button_stop_Click(object sender, EventArgs e)
+        {
+            EndCapture();
         }
     }
 }
