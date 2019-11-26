@@ -32,6 +32,8 @@
             this.videoFrame = new Emgu.CV.UI.ImageBox();
             this.start_button = new System.Windows.Forms.Button();
             this.button_stop = new System.Windows.Forms.Button();
+            this.logBox = new System.Windows.Forms.RichTextBox();
+            this.trainButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.videoFrame)).BeginInit();
             this.SuspendLayout();
             // 
@@ -64,11 +66,31 @@
             this.button_stop.UseVisualStyleBackColor = true;
             this.button_stop.Click += new System.EventHandler(this.button_stop_Click);
             // 
+            // logBox
+            // 
+            this.logBox.Location = new System.Drawing.Point(0, 505);
+            this.logBox.Name = "logBox";
+            this.logBox.Size = new System.Drawing.Size(713, 147);
+            this.logBox.TabIndex = 5;
+            this.logBox.Text = "";
+            // 
+            // trainButton
+            // 
+            this.trainButton.Location = new System.Drawing.Point(950, 505);
+            this.trainButton.Name = "trainButton";
+            this.trainButton.Size = new System.Drawing.Size(138, 42);
+            this.trainButton.TabIndex = 6;
+            this.trainButton.Text = "Train";
+            this.trainButton.UseVisualStyleBackColor = true;
+            this.trainButton.Click += new System.EventHandler(this.trainButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1245, 664);
+            this.Controls.Add(this.trainButton);
+            this.Controls.Add(this.logBox);
             this.Controls.Add(this.button_stop);
             this.Controls.Add(this.start_button);
             this.Controls.Add(this.videoFrame);
@@ -85,6 +107,8 @@
         private Emgu.CV.UI.ImageBox videoFrame;
         private System.Windows.Forms.Button start_button;
         private System.Windows.Forms.Button button_stop;
+        private System.Windows.Forms.RichTextBox logBox;
+        private System.Windows.Forms.Button trainButton;
     }
 }
 
