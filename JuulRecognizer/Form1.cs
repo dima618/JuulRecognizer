@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.IO.Ports;
+using System.Threading;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,7 +18,7 @@ namespace JuulRecognizer
 {
     public partial class Form1 : Form
     {
-        public Timer timer { get; set; }
+        public System.Windows.Forms.Timer timer { get; set; }
         public VideoCapture cap { get; set; } //new VideoCapture();
         public EigenFaceRecognizer FaceRecognition { get; set; }//= new EigenFaceRecognizer();
         public CascadeClassifier FaceDetection { get; set; }//= new CascadeClassifier();
@@ -28,6 +30,8 @@ namespace JuulRecognizer
         public int ImageWidth { get; set; } = 128;
         public int ImageHeight { get; set; } = 150;
 
+        public SerialPort serial;
+
 
         public string YMLPath { get; set; } = @"../../Res/trainingData.yml";
 
@@ -36,11 +40,13 @@ namespace JuulRecognizer
             InitializeComponent();
             cap = new VideoCapture();
             FaceRecognition = new EigenFaceRecognizer(80, double.PositiveInfinity);
-            FaceDetection = new CascadeClassifier(Path.GetFullPath(@"../../Res/face-detection-retail-0004.xml"));
+            FaceDetection = new CascadeClassifier(Path.GetFullPath(@"../../Res/haarcascade_frontalface_default.xml"));
             Frame = new Mat();
             Faces = new List<Image<Gray, byte>>();
             IDs = new List<int>();
-            timer = new Timer();
+            timer = new System.Windows.Forms.Timer();
+            //serial = new SerialPort("COM3", 9600);
+            //serial.Open();
             //Capture();
         }
 
@@ -68,6 +74,14 @@ namespace JuulRecognizer
                 var img = frame.ToImage<Bgr, byte>();
                 Image<Gray, byte> grayframe = img.Convert<Gray, byte>();
                 var faces = FaceDetection.DetectMultiScale(grayframe, 1.3, 5);
+                if (faces.Count() > 0)
+                {
+                    //serial.Write("1");
+                }
+                else
+                {
+                    //serial.Write("0");
+                }
                 foreach (var face in faces)
                 {
                     img.Draw(face, new Bgr(0, double.MaxValue, 0), 3);
@@ -91,9 +105,6 @@ namespace JuulRecognizer
             EndCapture();
         }
 
-        private void trainButton_Click(object sender, EventArgs e)
-        {
-            
-        }
+
     }
 }
