@@ -20,7 +20,7 @@ namespace JuulRecognizer
     {
         public System.Windows.Forms.Timer timer { get; set; }
         public VideoCapture cap { get; set; } //new VideoCapture();
-        public EigenFaceRecognizer FaceRecognition { get; set; }//= new EigenFaceRecognizer();
+        public CascadeClassifier JuulDetection { get; set; }//= new EigenFaceRecognizer();
         public CascadeClassifier FaceDetection { get; set; }//= new CascadeClassifier();
 
         public Mat Frame { get; set; }
@@ -39,15 +39,15 @@ namespace JuulRecognizer
         {
             InitializeComponent();
             cap = new VideoCapture();
-            FaceRecognition = new EigenFaceRecognizer(80, double.PositiveInfinity);
+            JuulDetection = new CascadeClassifier(Path.GetFullPath(@"../../Res/juulcascade.xml"));
             FaceDetection = new CascadeClassifier(Path.GetFullPath(@"../../Res/haarcascade_frontalface_default.xml"));
             Frame = new Mat();
             Faces = new List<Image<Gray, byte>>();
             IDs = new List<int>();
             timer = new System.Windows.Forms.Timer();
-            //serial = new SerialPort("COM3", 9600);
-            //serial.Open();
-            //Capture();
+            serial = new SerialPort("COM4", 9600);
+            serial.Open();
+            Capture();
         }
 
 
@@ -74,17 +74,23 @@ namespace JuulRecognizer
                 var img = frame.ToImage<Bgr, byte>();
                 Image<Gray, byte> grayframe = img.Convert<Gray, byte>();
                 var faces = FaceDetection.DetectMultiScale(grayframe, 1.3, 5);
+                var juuls = JuulDetection.DetectMultiScale(grayframe, 1.3, 5);
                 if (faces.Count() > 0)
                 {
-                    //serial.Write("1");
+                    serial.Write("1");
                 }
                 else
                 {
-                    //serial.Write("0");
+                    serial.Write("0");
                 }
+                Console.WriteLine(juuls.Count());
                 foreach (var face in faces)
                 {
                     img.Draw(face, new Bgr(0, double.MaxValue, 0), 3);
+                }
+                foreach (var juul in juuls)
+                {
+                    img.Draw(juul, new Bgr(100, double.MaxValue, 10), 3);
                 }
                 videoFrame.Image = img;
             }
@@ -104,7 +110,5 @@ namespace JuulRecognizer
         {
             EndCapture();
         }
-
-
     }
 }

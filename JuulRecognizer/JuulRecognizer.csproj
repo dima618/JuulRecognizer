@@ -97,7 +97,10 @@
     <Content Include="Res\haarcascade_frontalface_alt.xml" />
     <Content Include="Res\haarcascade_frontalface_alt2.xml" />
     <Content Include="Res\haarcascade_frontalface_alt_tree.xml" />
-    <Content Include="Res\haarcascade_frontalface_default.xml" />
+    <Content Include="Res\haarcascade_frontalface_default.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Res\juulcascade.xml" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
