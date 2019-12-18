@@ -104,10 +104,15 @@ namespace JuulRecognizer
                 
                 foreach (var face in faces)
                 {
+                    PointF centerFace = new PointF(face.Location.X + face.Width / 2, face.Location.Y + face.Height / 2);
+                    calculatePoint(centerFace, Fire);
+                    if (juuls.Count() < 1)
+                    {
+                        Fire = false;
+                    }
                     foreach (var juul in juuls)
                     {
-                        PointF centerFace = new PointF(face.Location.X + face.Width / 2, face.Location.Y + face.Height / 2);
-                        calculatePoint(centerFace, Fire);
+                         
                         if (juul.IntersectsWith(face) && !Fire)
                         {
                             juulTimer.Start();
@@ -124,9 +129,10 @@ namespace JuulRecognizer
                         //    //PointF Face = new PointF(face.Location.X + face.Width / 2, face.Location.Y + face.Height / 2);
                         //    calculatePoint(centerFace, true);
                         //}
-                        else if (!juul.IntersectsWith(face))
+                        if (!juul.IntersectsWith(face))
                         {
                             Fire = false;
+                            juulTimer.Stop();
                             juulTimer.Reset();
                         }
                     }
@@ -148,7 +154,7 @@ namespace JuulRecognizer
 
         private void sendSignal(Point currentPoint, bool fire)
         {
-            if (serial != null && serial.IsOpen)
+            if (serial != null )//&& serial.IsOpen)
             {
                 if (fire)
                 {
