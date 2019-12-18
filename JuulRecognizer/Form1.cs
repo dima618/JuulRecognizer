@@ -50,7 +50,7 @@ namespace JuulRecognizer
         {
             InitializeComponent();
             cap = new VideoCapture();
-            JuulDetection = new CascadeClassifier(Path.GetFullPath(@"../../Res/cascade_8.xml"));
+            JuulDetection = new CascadeClassifier(Path.GetFullPath(@"../../Res/cascade_4.xml"));
             FaceDetection = new CascadeClassifier(Path.GetFullPath(@"../../Res/haarcascade_frontalface_default.xml"));
             Frame = new Mat();
             Faces = new List<Image<Gray, byte>>();
@@ -86,7 +86,7 @@ namespace JuulRecognizer
         void EndCapture()
         {
             timer.Stop();
-            //videoFrame.Image = null;
+            videoFrame.Image = null;
         }
 
         void updateImage(object sender, EventArgs arg)
@@ -107,33 +107,27 @@ namespace JuulRecognizer
                     foreach (var juul in juuls)
                     {
                         PointF centerFace = new PointF(face.Location.X + face.Width / 2, face.Location.Y + face.Height / 2);
-                        calculatePoint(centerFace, false);
-                        if (juul.IntersectsWith(face) && !Aim && !Fire)
+                        calculatePoint(centerFace, Fire);
+                        if (juul.IntersectsWith(face) && !Fire)
                         {
-                            Aim = true;
                             juulTimer.Start();
-                            //PointF centerFace = new PointF(face.Location.X + face.Width / 2, face.Location.Y + face.Height / 2);
-                            //calculatePoint(centerFace, false);
-                        }
-                        else if (juul.IntersectsWith(face) && Aim && !Fire)
-                        {
-                            if (juulTimer.Elapsed.Seconds > 2)
+                            if (juulTimer.Elapsed.Seconds > 1)
                             {
                                 Fire = true;
                             }
                             //PointF centerFace = new PointF(face.Location.X + face.Width / 2, face.Location.Y + face.Height / 2);
                             //calculatePoint(centerFace, false);
                         }
-                        else if (juul.IntersectsWith(face) && Aim && Fire)
+                        //else if (juul.IntersectsWith(face) && Fire)
+                        //{
+                        //    Console.WriteLine("AIMING AND FIRING!!!!!");
+                        //    //PointF Face = new PointF(face.Location.X + face.Width / 2, face.Location.Y + face.Height / 2);
+                        //    calculatePoint(centerFace, true);
+                        //}
+                        else if (!juul.IntersectsWith(face))
                         {
-                            Console.WriteLine("AIMING AND FIRING!!!!!");
-                            //PointF centerFace = new PointF(face.Location.X + face.Width / 2, face.Location.Y + face.Height / 2);
-                            //calculatePoint(centerFace, true);
-                        }
-                        else
-                        {
-                            Aim = false;
                             Fire = false;
+                            juulTimer.Reset();
                         }
                     }
                     img.Draw(face, new Bgr(0, double.MaxValue, 0), 3);
@@ -154,16 +148,18 @@ namespace JuulRecognizer
 
         private void sendSignal(Point currentPoint, bool fire)
         {
-            if (fire)
+            if (serial != null && serial.IsOpen)
             {
-                serial.Write("X" + (currentPoint.X + settings.xShift).ToString() + ":Y" + (currentPoint.Y + settings.yShift).ToString() + ":F"); //Data stream format
+                if (fire)
+                {
+                    serial.Write("X" + (currentPoint.X + settings.xShift).ToString() + ":Y" + (currentPoint.Y + settings.yShift).ToString() + ":F"); //Data stream format
+                }
+                else
+                {
+                    serial.Write("X" + (currentPoint.X + settings.xShift).ToString() + ":Y" + (currentPoint.Y + settings.yShift).ToString()); //Data stream format
+                }
+                logBox.AppendText("Auto: X" + (currentPoint.X + settings.xShift).ToString() + "    Y" + (currentPoint.Y + settings.yShift).ToString() + Environment.NewLine); //Display detection position
             }
-            else
-            {
-                serial.Write("X" + (currentPoint.X + settings.xShift).ToString() + ":Y" + (currentPoint.Y + settings.yShift).ToString()); //Data stream format
-            }
-            logBox.AppendText("Auto: X" + (currentPoint.X + settings.xShift).ToString() + "    Y" + (currentPoint.Y + settings.yShift).ToString() + Environment.NewLine); //Display detection position
-
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -199,7 +195,6 @@ namespace JuulRecognizer
                 EndCapture();
                 Calibration calibrate = new Calibration(serial);
                 calibrate.ShowDialog();
-                calibrate.Dispose();
             }
             catch
             {

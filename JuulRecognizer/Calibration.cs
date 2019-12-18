@@ -143,7 +143,7 @@ namespace JuulRecognizer
 
         private void sendSerial()
         {
-            if (virtualPoint.X < 180 && virtualPoint.X > 0 && virtualPoint.Y < 120 && virtualPoint.Y > 0)
+            if (virtualPoint.X < 180 && virtualPoint.X > 0 && virtualPoint.Y < 120 && virtualPoint.Y > 0 && port.IsOpen)
             {
                 port.Write("X" + (virtualPoint.X).ToString() + ":Y" + (virtualPoint.Y).ToString()); //Data stream format
             }
@@ -224,11 +224,13 @@ namespace JuulRecognizer
             
             capture.Dispose();
             resetPos();
+            //this.Dispose();
         }
 
         private void resetPos()
         {
-            port.Write("X90:Y90");
+            if (port.IsOpen)
+                port.Write("X90:Y90");
         }
 
         private void Calibration_Load(object sender, EventArgs e)
